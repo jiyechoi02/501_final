@@ -1,0 +1,52 @@
+
+
+```{r}
+library(mosaic)
+```
+
+```{r}
+day_data <- read.csv("./Bike-Sharing-Dataset/day.csv", header=TRUE)
+summary(day_data)
+```
+```{r}
+dteday <- day_data[c('dteday','cnt')]
+summary(dteday)
+```
+```{r}
+numeric_data <- day_data %>% select(-dteday)
+summary(numeric_data)
+```
+
+
+```{r}
+cor(numeric_data)[,15]
+```
+```{r}
+pairs(numeric_data[c('instant','yr','temp','atemp','casual','registered','cnt')],pch=19)
+```
+
+
+```{r}
+model <- lm(cnt~temp, data=numeric_data)
+summary(model)
+```
+
+```{r}
+plot(cnt ~temp, data=numeric_data, col="blue")
+abline(model,lwd=3,col="red")
+```
+
+```{r}
+plot(model,1)
+```
+
+
+```{r}
+plot(model,2)
+```
+
+```{r}
+plot(model,3)
+
+```
+
