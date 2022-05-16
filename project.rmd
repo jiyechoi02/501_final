@@ -3,26 +3,84 @@
 ```{r}
 library(mosaic)
 library(car)
+library(tidyverse) 
+library(ggplot2)
 
 ```
 
 
 ```{r}
 
-df <- read.csv("./Bike-Sharing-Dataset/hour.csv",header=TRUE)
+df <- read.csv("./Bike-Sharing-Dataset/day.csv",header=TRUE)
 
-df <- df %>% select(-instant)
-df <- df %>% select(-casual)
-df <- df %>% select(-registered)
+#df <- df %>% select(-instant)
+#df <- df %>% select(-casual)
+#df <- df %>% select(-registered)
+#summary(df)
+
+head(df,5)
+```
+
+
+
+
+```{r}
+#remove unnecessory variables, instant, casual, registered 
+
+df <-subset(df, select =-c(instant,casual,registered))
 summary(df)
 ```
 
+```{r}
+# typecasting categorical variables 
 
+df$dteday <- as.Date(df$dteday)
+df$yr <- as.factor(df$yr)
+df$mnth <- as.factor(df$mnth)
+df$season <- as.factor(df$season)
+df$holiday <- as.factor(df$holiday)
+df$weekday <- as.factor(df$weekday)
+df$workingday<-as.factor(df$workingday)
+df$weathersit<-as.factor(df$weathersit)
+
+```
+
+```{r}
+summary(df)
+```
+
+```{r}
+
+ggplot(df, aes(x=season, y=cnt, fill=season)) +geom_col()+ labs(x='Season', y='Count', title='Season vs. total count')
+ggplot(df, aes(x=yr, y=cnt, fill=yr)) +geom_col()+ labs(x='Year', y='Count', title='Year vs. total count')
+ggplot(df, aes(x=mnth, y=cnt, fill=mnth)) +geom_col()+ labs(x='Month', y='Count', title='Month vs. total count')
+ggplot(df, aes(x=holiday, y=cnt, fill=holiday)) +geom_col()+ labs(x='Holiday', y='Count', title='Holiday vs. total count')
+ggplot(df, aes(x=weekday, y=cnt, fill=weekday)) +geom_col()+ labs(x='Weekday', y='Count', title='Weekday vs. total count')
+ggplot(df, aes(x=workingday, y=cnt, fill=workingday)) +geom_col()+ labs(x='Workingday', y='Count', title='Workingday vs. total count')
+ggplot(df, aes(x=weathersit, y=cnt, fill=weathersit)) +geom_col()+ labs(x='weathersit', y='Count', title='weathersit vs. total count')
+
+
+```
+```{r}
+cor(df[, c('hr','temp','atemp','hum','windspeed','cnt')])
+
+```
+
+```{r}
+pairs(df[, c('hr','temp','atemp','hum','windspeed','cnt')])
+```
 
 
 ```{r}
-model <- lm(cnt~season, data=df)
-Anova(model)
+#select features : temp, weathersit, holiday, season, month 
+model <- lm(cnt ~ temp+weathersit+holiday+season+mnth, ,data=df)
+summary(model)
 ```
 
+```{r}
+plot(model,1)
+plot(model,2)
+plot(model,3)
+
+```
 
